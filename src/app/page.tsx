@@ -1,5 +1,5 @@
 import ProductCard from './components/ProductCard';
-import { Product } from '@/types'; // giả sử bạn lưu type ở đây
+import { Product } from '@/types';
 
 export default async function Home() {
   const res = await fetch(`${process.env.BASE_URL}/api/products`, {
