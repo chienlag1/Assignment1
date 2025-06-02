@@ -1,4 +1,5 @@
 import ProductCard from './components/ProductCard';
+import { Product } from '@/types'; // giả sử bạn lưu type ở đây
 
 export default async function Home() {
   const res = await fetch(`${process.env.BASE_URL}/api/products`, {
@@ -11,13 +12,13 @@ export default async function Home() {
     return <div>Failed to load products</div>;
   }
 
-  const products = await res.json();
+  const products: Product[] = await res.json(); // chỉ định kiểu Product[]
 
   return (
     <div>
       <h1>Danh sách sản phẩm</h1>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        {products.map((product: any) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

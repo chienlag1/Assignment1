@@ -26,7 +26,7 @@ export default function Pagination({
     // Hiển thị một số trang xung quanh trang hiện tại
     const maxPagesToShow = 5; // Số nút trang tối đa để hiển thị
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
 
     // Điều chỉnh nếu chúng ta ở gần cuối
     if (endPage - startPage + 1 < maxPagesToShow) {
