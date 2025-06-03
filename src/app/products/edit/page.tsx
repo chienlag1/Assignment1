@@ -6,7 +6,7 @@ export default async function EditProduct({
   searchParams: { id: string };
 }) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BASE_URL}/api/products/${searchParams.id}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${searchParams.id}`,
     {
       cache: 'no-store',
     }
