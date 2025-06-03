@@ -3,15 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
 
+// Your Context type remains the same
 type Context = {
   params: { id: string };
 };
 
 export async function GET(
   req: NextRequest,
-  { params }: Context
+  context: Context // Pass the whole context object
 ) {
-  const { id } = params;
+  const { id } = context.params; // Destructure inside the function
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json(
@@ -44,9 +45,9 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: Context
+  context: Context // Pass the whole context object
 ) {
-  const { id } = params;
+  const { id } = context.params; // Destructure inside the function
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json(
@@ -81,18 +82,24 @@ export async function PUT(
 
     console.log("PUT - Product updated:", updatedProduct);
     return NextResponse.json(updatedProduct);
-  } catch (error: any) {
+  } catch (error) {
     console.error("PUT Error:", error);
 
-    if (error.code === "P2025") {
+    if (error instanceof Error) {
+      if ((error as any).code === "P2025") {
+        return NextResponse.json(
+          { error: "Không tìm thấy sản phẩm để cập nhật" },
+          { status: 404 }
+        );
+      }
       return NextResponse.json(
-        { error: "Không tìm thấy sản phẩm để cập nhật" },
-        { status: 404 }
+        { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
+        { status: 500 }
       );
     }
 
     return NextResponse.json(
-      { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
+      { error: "Lỗi máy chủ nội bộ", details: "Unknown error" },
       { status: 500 }
     );
   }
@@ -100,9 +107,9 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: Context
+  context: Context // Pass the whole context object
 ) {
-  const { id } = params;
+  const { id } = context.params; // Destructure inside the function
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json(
@@ -118,11 +125,18 @@ export async function DELETE(
 
     console.log("DELETE - Đã xóa sản phẩm:", id);
     return NextResponse.json({ message: "Đã xóa" });
-  } catch (error: any) {
+  } catch (error) {
     console.error("DELETE Error:", error);
 
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
+      { error: "Lỗi máy chủ nội bộ", details: "Unknown error" },
       { status: 500 }
     );
   }
