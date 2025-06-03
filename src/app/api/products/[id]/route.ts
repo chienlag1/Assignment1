@@ -2,16 +2,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
-// Import PrismaClientKnownRequestError for better type checking
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'; 
-
-type Context = {
-  params: { id: string };
-};
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export async function GET(
   req: NextRequest,
-  context: Context
+  // Thêm 'Readonly' vào params
+  context: { params: Readonly<{ id: string }> }
 ) {
   const { id } = context.params;
 
@@ -46,7 +42,8 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  context: Context
+  // Thêm 'Readonly' vào params
+  context: { params: Readonly<{ id: string }> }
 ) {
   const { id } = context.params;
 
@@ -61,7 +58,6 @@ export async function PUT(
   console.log("PUT - id:", id);
   console.log("PUT - data:", data);
 
-  // Kiểm tra các trường bắt buộc
   if (!data.name || !data.description || data.price === undefined || data.price === null) {
     console.error("PUT Error: Thiếu trường bắt buộc:", data);
     return NextResponse.json(
@@ -86,9 +82,8 @@ export async function PUT(
   } catch (error) {
     console.error("PUT Error:", error);
 
-    // Use a type guard to check if the error is a PrismaClientKnownRequestError
     if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === "P2025") { // Now `error.code` is safely accessible
+      if (error.code === "P2025") {
         return NextResponse.json(
           { error: "Không tìm thấy sản phẩm để cập nhật" },
           { status: 404 }
@@ -99,14 +94,12 @@ export async function PUT(
         { status: 500 }
       );
     } else if (error instanceof Error) {
-      // Fallback for generic Error objects
       return NextResponse.json(
         { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
         { status: 500 }
       );
     }
 
-    // Fallback for non-Error objects
     return NextResponse.json(
       { error: "Lỗi máy chủ nội bộ", details: "Unknown error" },
       { status: 500 }
@@ -116,7 +109,8 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  context: Context
+  // Thêm 'Readonly' vào params
+  context: { params: Readonly<{ id: string }> }
 ) {
   const { id } = context.params;
 
@@ -137,9 +131,8 @@ export async function DELETE(
   } catch (error) {
     console.error("DELETE Error:", error);
 
-    // Use a type guard for PrismaClientKnownRequestError if DELETE can also throw it
     if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === "P2025") { // Example: if trying to delete a non-existent record
+        if (error.code === "P2025") {
             return NextResponse.json(
                 { error: "Không tìm thấy sản phẩm để xóa" },
                 { status: 404 }
