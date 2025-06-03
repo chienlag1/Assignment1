@@ -10,7 +10,8 @@ export default function ProductForm({ product }: { product?: Product }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl =
+      process.env.NEXT_PUBLIC_NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     const url = product
       ? `${baseUrl}/api/products/${product.id}`

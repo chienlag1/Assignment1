@@ -10,7 +10,7 @@ export default async function ProductDetail({
   const id = params.id;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${id}`,
+    `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BASE_URL}/api/products/${id}`,
     { cache: 'no-store' }
   );
 
