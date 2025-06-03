@@ -1,4 +1,5 @@
 import DeleteButton from '@/app/components/DeleteButton';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 export default async function ProductDetail({
@@ -25,7 +26,7 @@ export default async function ProductDetail({
     <div className='max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl'>
       <div className='flex flex-col items-center'>
         {product.image && (
-          <img
+          <Image
             src={product.image}
             alt={product.name}
             className='w-full max-w-sm rounded mb-4'

@@ -1,51 +1,42 @@
 // app/api/products/[id]/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
+// GET handler
 export async function GET(
   req: NextRequest,
-  // Thêm 'Readonly' vào params
-  context: { params: Readonly<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   if (!ObjectId.isValid(id)) {
-    return NextResponse.json(
-      { error: "Định dạng ID không hợp lệ" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Định dạng ID không hợp lệ" }, { status: 400 });
   }
 
   try {
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
+    const product = await prisma.product.findUnique({ where: { id } });
 
     if (!product) {
-      return NextResponse.json(
-        { error: "Không tìm thấy sản phẩm" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Không tìm thấy sản phẩm" }, { status: 404 });
     }
 
     return NextResponse.json(product);
   } catch (error) {
-    console.error("GET Error:", error);
-    return NextResponse.json(
-      { error: "Lỗi máy chủ nội bộ" },
-      { status: 500 }
-    );
-  }
+  console.error("GET Error:", error);
+  return NextResponse.json({ error: "Lỗi máy chủ nội bộ" }, { status: 500 });
+}
 }
 
+
+// PUT - Cập nhật sản phẩm
 export async function PUT(
   req: NextRequest,
-  // Thêm 'Readonly' vào params
-  context: { params: Readonly<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json(
@@ -107,12 +98,12 @@ export async function PUT(
   }
 }
 
+// DELETE - Xoá sản phẩm
 export async function DELETE(
   req: NextRequest,
-  // Thêm 'Readonly' vào params
-  context: { params: Readonly<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const { id } = params;
 
   if (!ObjectId.isValid(id)) {
     return NextResponse.json(
@@ -132,16 +123,16 @@ export async function DELETE(
     console.error("DELETE Error:", error);
 
     if (error instanceof PrismaClientKnownRequestError) {
-        if (error.code === "P2025") {
-            return NextResponse.json(
-                { error: "Không tìm thấy sản phẩm để xóa" },
-                { status: 404 }
-            );
-        }
+      if (error.code === "P2025") {
         return NextResponse.json(
-            { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
-            { status: 500 }
+          { error: "Không tìm thấy sản phẩm để xoá" },
+          { status: 404 }
         );
+      }
+      return NextResponse.json(
+        { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
+        { status: 500 }
+      );
     } else if (error instanceof Error) {
       return NextResponse.json(
         { error: "Lỗi máy chủ nội bộ", details: error.message || "Unknown error" },
