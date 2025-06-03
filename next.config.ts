@@ -1,12 +1,8 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+// next.config.js
+const nextConfig = {
   images: {
-    domains: [
-      'th.bing.com',
-      'tiki.vn', // 👈 thêm dòng này
-    ],
+    domains: ['th.bing.com', 'tiki.vn'],
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
