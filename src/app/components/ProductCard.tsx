@@ -1,6 +1,7 @@
 // app/components/ProductCard.tsx
 import { Product } from '@/types';
 import Image from 'next/image';
+
 import Link from 'next/link';
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -8,10 +9,12 @@ export default function ProductCard({ product }: { product: Product }) {
     <div className='bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden'>
       {product.image && (
         <div className='relative w-full h-48 sm:h-56 lg:h-64 overflow-hidden'>
-          <img
+          <Image
             src={product.image}
             alt={product.name}
-            className='w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500 ease-in-out'
+            fill
+            sizes='(max-width: 768px) 100vw, 50vw'
+            className='object-cover object-center transition-transform duration-500 ease-in-out hover:scale-105'
           />
         </div>
       )}
