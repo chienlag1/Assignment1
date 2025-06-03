@@ -13,7 +13,7 @@ export default function ProductForm({ product }: { product?: Product }) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     const url = product
-      ? `${baseUrl}/api/products/${product.id}` // SỬA CHẮC CHẮN DÒNG NÀY ĐÚNG CÚ PHÁP
+      ? `${baseUrl}/api/products/${product.id}`
       : `${baseUrl}/api/products`;
 
     const method = product ? 'PUT' : 'POST';
